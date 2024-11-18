@@ -22,6 +22,9 @@ devDependencies:
   '@types/react':
     specifier: 18.3.12
     version: 18.3.12
+  prettier:
+    specifier: ^3.3.3
+    version: 3.3.3
   typescript:
     specifier: 5.6.3
     version: 5.6.3
@@ -459,6 +462,12 @@ packages:
       picocolors: 1.1.1
       source-map-js: 1.2.1
     dev: false
+
+  /prettier@3.3.3:
+    resolution: {integrity: sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: true
 
   /react-dom@18.3.1(react@18.3.1):
     resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
