@@ -10,13 +10,42 @@ async function query(queryObject) {
     database: env.POSTGRES_DB,
     password: env.POSTGRES_PASSWORD,
   })
-  await client.connect()
-  const result = await client.query(queryObject)
-  await client.end()
 
-  return result
+  try {
+    await client.connect()
+    const result = await client.query(queryObject)
+    return result
+  } catch (err) { 
+    console.error(err)
+  } finally  {
+    await client.end()
+  }
+}
+
+async function getMaxConnection() {
+  const result = await query('SHOW max_connections;')
+
+  return Number(result.rows[0].max_connections)
+}
+
+async function getVersion() {
+  const result = await query('SHOW server_version')
+  
+  return result.rows[0].server_version as string
+}
+
+async function getOpenedConnections() {
+  const result = await query({
+    text: 'SELECT count(*)::int FROM pg_stat_activity WHERE datname = $1;',
+    values: [env.POSTGRES_DB]
+  })
+
+  return result.rows[0].count as number
 }
 
 export default {
-  query: query,
+  query,
+  getMaxConnection,
+  getVersion,
+  getOpenedConnections,
 }

@@ -1,9 +1,18 @@
-import database from 'infra/database'
+import database from 'infra/database';
 import { NextResponse } from 'next/server'
 
-
 export async function GET() {
-  const result = await database.query('SELECT 1 + 1;')
+  const updatedAt = new Date().toISOString()
+  const version = await database.getVersion()
+  const maxConnections = await database.getMaxConnection()
+  const openedConnections = await database.getOpenedConnections()
 
-  return NextResponse.json({ message: 'alunos do curso.dev são pessoas acima da média!' }, { status: 200 })
+  return NextResponse.json({
+    updated_at: updatedAt,
+    dependecies: { 
+      potgres_version: version,
+      max_connections: maxConnections,
+      opened_connections: openedConnections
+    }
+  }, { status: 200 })
 }
