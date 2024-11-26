@@ -8,4 +8,4 @@ const envSchema = z.object({
   POSTGRES_PASSWORD: z.string(),
 })
 
-export const env = envSchema.parse(process.env)
+// export const env = envSchema.parse(process.env)

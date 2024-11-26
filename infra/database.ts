@@ -1,6 +1,6 @@
 import { Client } from 'pg'
 
-import { env } from '../env'
+// import { env } from '../env'
 
 async function query(queryObject) {
   const client = new Client({
