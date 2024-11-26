@@ -37,7 +37,7 @@ async function getVersion() {
 async function getOpenedConnections() {
   const result = await query({
     text: 'SELECT count(*)::int FROM pg_stat_activity WHERE datname = $1;',
-    values: [env.POSTGRES_DB]
+    values: [process.env.POSTGRES_DB]
   })
 
   return result.rows[0].count as number
