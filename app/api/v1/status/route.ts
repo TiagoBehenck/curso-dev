@@ -9,10 +9,12 @@ export async function GET() {
 
   return NextResponse.json({
     updated_at: updatedAt,
-    dependecies: { 
-      potgres_version: version,
-      max_connections: maxConnections,
-      opened_connections: openedConnections
-    }
+    dependecies: {
+      database: {
+        potgres_version: version,
+        max_connections: maxConnections,
+        opened_connections: openedConnections
+      },
+    },
   }, { status: 200 })
 }
