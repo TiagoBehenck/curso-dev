@@ -11,12 +11,16 @@
     "build": "next build",
     "test": "vitest",
     "lint:check": "prettier --check .",
-    "lint:fix": "prettier --write ."
+    "lint:fix": "prettier --write .",
+    "migration:create": "./node_modules/.bin/node-pg-migrate -m infra/migrations create",
+    "migration:up": "./node_modules/.bin/node-pg-migrate -m infra/migrations --envPath .env.development up",
+    "migration:down": "./node_modules/.bin/node-pg-migrate -m infra/migrations --envPath .env.development down"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "next": "15.0.3",
     "pg": "^8.13.1",
     "react": "18.3.1",
@@ -30,6 +34,7 @@
     "@types/react": "18.3.12",
     "@vitejs/plugin-react": "^4.3.3",
     "jsdom": "^25.0.1",
+    "node-pg-migrate": "^7.8.0",
     "prettier": "^3.3.3",
     "typescript": "5.6.3",
     "vite-tsconfig-paths": "^5.1.3",
