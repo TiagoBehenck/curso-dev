@@ -9,7 +9,7 @@ async function query(queryObject) {
     user: env.POSTGRES_USER,
     database: env.POSTGRES_DB,
     password: env.POSTGRES_PASSWORD,
-    ssl: process.env.NODE_ENV === 'development' ? false : true,
+    ssl: getSSLValues(),
   })
 
   try {
@@ -45,9 +45,20 @@ async function getOpenedConnections() {
   return result.rows[0].count as number
 }
 
+function getSSLValues() {
+  if (env.POSTGRES_CA) {
+    return { 
+      ca: env.POSTGRES_CA,
+    }
+  }
+
+  return process.env.NODE_ENV === 'development' ? false : true
+}
+
 export default {
   query,
   getMaxConnection,
   getVersion,
   getOpenedConnections,
+  getSSLValues,
 }
