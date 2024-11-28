@@ -7,6 +7,7 @@ const envSchema = z.object({
   POSTGRES_DB: z.string(),
   POSTGRES_PASSWORD: z.string(),
   POSTGRES_CA: z.string(),
+  DATABASE_URL: z.string(),
 })
 
 export const env = envSchema.parse(process.env)
