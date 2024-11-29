@@ -9,7 +9,7 @@
     "services:stop": "docker compose -f infra/compose.yaml stop",
     "services:down": "docker compose -f infra/compose.yaml down",
     "build": "next build",
-    "test": "vitest",
+    "test": "vitest --no-file-parallelism",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
     "migration:create": "./node_modules/.bin/node-pg-migrate -m infra/migrations create",
