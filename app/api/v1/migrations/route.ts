@@ -15,7 +15,7 @@ const defaultMigratioOptions: RunnerOptionConfig = {
 }
 
 async function runMigration({
-  dryRun = false,
+  dryRun = true,
   ...rest
 }: Partial<RunnerOptionConfig> = {}): Promise<{ migrations: RunMigration[] }> {
   let dbClient;
