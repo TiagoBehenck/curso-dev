@@ -3,6 +3,21 @@ import { Client } from 'pg'
 import { env } from '../env'
 
 async function query(queryObject) {
+  let client
+
+  try {
+    client = await getNewClient();
+    const result = await client.query(queryObject)
+    return result
+  } catch (err) { 
+    console.error(err)
+    throw err
+  } finally  {
+    await client.end()
+  }
+}
+
+async function getNewClient() {
   const client = new Client({
     host: env.POSTGRES_HOST,
     port: env.POSTGRES_PORT,
@@ -12,16 +27,9 @@ async function query(queryObject) {
     ssl: getSSLValues(),
   })
 
-  try {
-    await client.connect()
-    const result = await client.query(queryObject)
-    return result
-  } catch (err) { 
-    console.error(err)
-    throw err
-  } finally  {
-    await client.end()
-  }
+  await client.connect();
+
+  return client;
 }
 
 async function getMaxConnection() {
@@ -57,6 +65,7 @@ function getSSLValues() {
 
 export default {
   query,
+  getNewClient,
   getMaxConnection,
   getVersion,
   getOpenedConnections,
