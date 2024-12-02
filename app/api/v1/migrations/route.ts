@@ -2,7 +2,7 @@ import type { RunnerOptionConfig } from 'node-pg-migrate/dist/types'
 import type { RunMigration } from 'node-pg-migrate/dist/migration'
 import migrationRunner from 'node-pg-migrate'
 import { NextResponse } from 'next/server'
-import { join } from 'path'
+import { join } from 'node:path'
 
 import database from 'infra/database'
 
