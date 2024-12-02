@@ -4,28 +4,31 @@ import { join } from 'path'
 
 import { env } from 'env'
 
+const defaultMigratioOptions: RunnerOption = {
+  databaseUrl: env.DATABASE_URL,
+  dir: join('infra', 'migrations'),
+  direction: 'up',
+  migrationsTable: 'pgmigrations',
+  verbose: true,
+  dryRun: true,
+}
+
 export async function GET() {
-  const migrations = await migrationRunner({
-    databaseUrl: env.DATABASE_URL,
-    dir: join('infra', 'migrations'),
-    direction: 'up',
-    migrationsTable: 'pgmigrations',
-    verbose: true,
-    dryRun: true,
-  })
+  const pendingMigrations = await migrationRunner(defaultMigratioOptions)
   
-  return NextResponse.json(migrations, { status: 200 })
+  return NextResponse.json(pendingMigrations, { status: 200 })
 }
 
 export async function POST() {
-  const migrations = await migrationRunner({
-    databaseUrl: env.DATABASE_URL,
-    dir: join('infra', 'migrations'),
-    direction: 'up',
-    migrationsTable: 'pgmigrations',
-    verbose: true,
+  const migratedMigrations = await migrationRunner({
+    ...defaultMigratioOptions,
     dryRun: false,
   })
 
-  return NextResponse.json(migrations, { status: 200 })
+  const hasMigrations = migratedMigrations.length > 0
+  
+  return NextResponse.json(
+    migratedMigrations, 
+    { status: hasMigrations ? 201 : 200 }
+  )
 }
