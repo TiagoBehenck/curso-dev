@@ -2,12 +2,12 @@ import type { RunnerOptionConfig } from 'node-pg-migrate/dist/types'
 import type { RunMigration } from 'node-pg-migrate/dist/migration'
 import migrationRunner from 'node-pg-migrate'
 import { NextResponse } from 'next/server'
-import { join } from 'node:path'
+import { resolve } from 'node:path'
 
 import database from 'infra/database'
 
 const defaultMigratioOptions: RunnerOptionConfig = {
-  dir: join('infra', 'migrations'),
+  dir: resolve('infra', 'migrations'),
   direction: 'up',
   migrationsTable: 'pgmigrations',
   verbose: true,
