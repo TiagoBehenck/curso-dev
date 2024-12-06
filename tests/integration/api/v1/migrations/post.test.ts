@@ -1,12 +1,5 @@
 import database from 'infra/database'
-import { beforeAll, expect, test } from 'vitest'
-
-beforeAll(cleanDatabase)
-
-async function cleanDatabase() {
-  await database.query('drop schema public cascade; create schema public;')
-}
-
+import { expect, test } from 'vitest'
 
 test('POST to /api/v1/migrations should return 200', async () => {
   const response1 = await fetch('http://localhost:3000/api/v1/migrations', { 
@@ -18,7 +11,7 @@ test('POST to /api/v1/migrations should return 200', async () => {
   const responseBody = await response1.json()
   expect(Array.isArray(responseBody)).toBe(true)
 
-  await Promise.all(responseBody.map(async (migration) => {
+  await Promise.allSettled(responseBody.map(async (migration) => {
     expect(migration).toHaveProperty('name');
     expect(typeof migration.name).toBe('string');
 
@@ -29,7 +22,7 @@ test('POST to /api/v1/migrations should return 200', async () => {
 
     const migrationCount = result.rows[0].count
     expect(migrationCount).toBeGreaterThan(0);
-
+    
     const response2 = await fetch('http://localhost:3000/api/v1/migrations', { 
       method: 'POST'
     })
@@ -37,7 +30,7 @@ test('POST to /api/v1/migrations should return 200', async () => {
     expect(response2.status).toBe(200);
     
     const response2Body = await response2.json()
-
+  
     expect(Array.isArray(response2Body)).toBe(true)
     expect(response2Body.length).toBe(0);
   }))

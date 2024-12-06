@@ -15,6 +15,7 @@ expand(
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
+    setupFiles: './tests/setup.ts',
     globals: true,
     fileParallelism: false,
     isolate: false,
