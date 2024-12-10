@@ -14,10 +14,11 @@ async function waitForWebServer() {
 
 async function fetchStatusPage() {
   const response = await fetch("http://localhost:3000/api/v1/status");
-  await response.json();
+  if (response.status !== 200) {
+    throw Error();
+  }
 }
 
 export async function cleanDatabase() {
   await database.query("drop schema public cascade; create schema public;");
 }
-
