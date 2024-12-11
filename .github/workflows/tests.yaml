@@ -13,5 +13,6 @@ jobs:
         with:
           node-version: '.nvmrc'
 
+      - run: npm install -g pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
