@@ -18,6 +18,6 @@ export async function GET() {
         },
       },
     },
-    { status: 200 },
+    { status: 200 }
   )
 }

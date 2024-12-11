@@ -8,7 +8,7 @@ import { config } from 'dotenv'
 expand(
   config({
     path: '.env.test',
-  }),
+  })
 )
 
 export default defineConfig({
