@@ -48,7 +48,7 @@ export async function GET() {
   } catch (error) {
     return NextResponse.json(
       { error: 'Migration check failed', details: error.message },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }
@@ -67,7 +67,7 @@ export async function POST() {
   } catch (error) {
     return NextResponse.json(
       { error: 'Migration execution failed', details: error.message },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }
