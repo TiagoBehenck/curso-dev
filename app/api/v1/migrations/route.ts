@@ -18,15 +18,15 @@ async function runMigration({
   dryRun = true,
   ...rest
 }: Partial<RunnerOptionConfig> = {}): Promise<{ migrations: RunMigration[] }> {
-  let dbClient;
-  
+  let dbClient
+
   try {
     dbClient = await database.getNewClient()
     const migrations = await migrationRunner({
       ...defaultMigratioOptions,
       ...rest,
       dbClient,
-      dryRun
+      dryRun,
     })
 
     return { migrations }
@@ -43,12 +43,12 @@ async function runMigration({
 export async function GET() {
   try {
     const { migrations: pendingMigrations } = await runMigration()
-    
+
     return NextResponse.json(pendingMigrations, { status: 200 })
   } catch (error) {
     return NextResponse.json(
-      { error: 'Migration check failed', details: error.message }, 
-      { status: 500 }
+      { error: 'Migration check failed', details: error.message },
+      { status: 500 },
     )
   }
 }
@@ -60,15 +60,14 @@ export async function POST() {
     })
 
     const hasMigrations = migratedMigrations.length > 0
-    
-    return NextResponse.json(
-      migratedMigrations, 
-      { status: hasMigrations ? 201 : 200 }
-    )
+
+    return NextResponse.json(migratedMigrations, {
+      status: hasMigrations ? 201 : 200,
+    })
   } catch (error) {
     return NextResponse.json(
-      { error: 'Migration execution failed', details: error.message }, 
-      { status: 500 }
+      { error: 'Migration execution failed', details: error.message },
+      { status: 500 },
     )
   }
 }

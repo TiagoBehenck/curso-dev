@@ -6,13 +6,13 @@ async function query(queryObject) {
   let client
 
   try {
-    client = await getNewClient();
+    client = await getNewClient()
     const result = await client.query(queryObject)
     return result
-  } catch (err) { 
+  } catch (err) {
     console.error(err)
     throw err
-  } finally  {
+  } finally {
     await client.end()
   }
 }
@@ -27,9 +27,9 @@ async function getNewClient() {
     ssl: getSSLValues(),
   })
 
-  await client.connect();
+  await client.connect()
 
-  return client;
+  return client
 }
 
 async function getMaxConnection() {
@@ -40,14 +40,14 @@ async function getMaxConnection() {
 
 async function getVersion() {
   const result = await query('SHOW server_version')
-  
+
   return result.rows[0].server_version as string
 }
 
 async function getOpenedConnections() {
   const result = await query({
     text: 'SELECT count(*)::int FROM pg_stat_activity WHERE datname = $1;',
-    values: [env.POSTGRES_DB]
+    values: [env.POSTGRES_DB],
   })
 
   return result.rows[0].count as number
@@ -55,7 +55,7 @@ async function getOpenedConnections() {
 
 function getSSLValues() {
   if (env.POSTGRES_CA) {
-    return { 
+    return {
       ca: env.POSTGRES_CA,
     }
   }

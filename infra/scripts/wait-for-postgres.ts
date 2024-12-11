@@ -1,12 +1,16 @@
 import { exec, type ExecException } from 'node:child_process'
 
-function checkPostgres(){
+function checkPostgres() {
   exec('docker exec postgres-dev pg_isready --host localhost', handleReturn)
 
-  function handleReturn(error: ExecException | null, stdout: string, stderr: string) {
+  function handleReturn(
+    error: ExecException | null,
+    stdout: string,
+    stderr: string,
+  ) {
     if (stdout.search('accepting connections') === -1) {
       process.stdout.write('.')
-      
+
       checkPostgres()
       return
     }
