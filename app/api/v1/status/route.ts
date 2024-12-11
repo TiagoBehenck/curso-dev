@@ -1,11 +1,11 @@
-import database from "infra/database";
-import { NextResponse } from "next/server";
+import database from 'infra/database'
+import { NextResponse } from 'next/server'
 
 export async function GET() {
-  const updatedAt = new Date().toISOString();
-  const version = await database.getVersion();
-  const maxConnections = await database.getMaxConnection();
-  const openedConnections = await database.getOpenedConnections();
+  const updatedAt = new Date().toISOString()
+  const version = await database.getVersion()
+  const maxConnections = await database.getMaxConnection()
+  const openedConnections = await database.getOpenedConnections()
 
   return NextResponse.json(
     {
@@ -19,5 +19,5 @@ export async function GET() {
       },
     },
     { status: 200 },
-  );
+  )
 }
