@@ -1,4 +1,4 @@
-import database from 'infra/database'
+import { query } from 'infra/database'
 import { expect, test } from 'vitest'
 
 test('POST to /api/v1/migrations should return 200', async () => {
@@ -16,7 +16,7 @@ test('POST to /api/v1/migrations should return 200', async () => {
       expect(migration).toHaveProperty('name')
       expect(typeof migration.name).toBe('string')
 
-      const result = await database.query({
+      const result = await query({
         text: 'SELECT count(*)::int FROM public.pgmigrations WHERE name = $1;',
         values: [migration.name],
       })

@@ -1,11 +1,15 @@
-import database from 'infra/database'
+import {
+  getVersion,
+  getMaxConnection,
+  getOpenedConnections,
+} from 'infra/database'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   const updatedAt = new Date().toISOString()
-  const version = await database.getVersion()
-  const maxConnections = await database.getMaxConnection()
-  const openedConnections = await database.getOpenedConnections()
+  const version = await getVersion()
+  const maxConnections = await getMaxConnection()
+  const openedConnections = await getOpenedConnections()
 
   return NextResponse.json(
     {
