@@ -4,7 +4,7 @@ import migrationRunner from 'node-pg-migrate'
 import { NextResponse } from 'next/server'
 import { resolve } from 'node:path'
 
-import database from 'infra/database'
+import { getNewClient } from 'infra/database'
 
 const defaultMigratioOptions: RunnerOptionConfig = {
   dir: resolve('infra', 'migrations'),
@@ -21,7 +21,7 @@ async function runMigration({
   let dbClient
 
   try {
-    dbClient = await database.getNewClient()
+    dbClient = await getNewClient()
     const migrations = await migrationRunner({
       ...defaultMigratioOptions,
       ...rest,

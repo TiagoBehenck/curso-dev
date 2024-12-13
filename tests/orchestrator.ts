@@ -1,5 +1,5 @@
 import retry from 'async-retry'
-import database from 'infra/database'
+import { query } from 'infra/database'
 
 export async function waitForAllServices() {
   await waitForWebServer()
@@ -20,5 +20,5 @@ async function fetchStatusPage() {
 }
 
 export async function cleanDatabase() {
-  await database.query('drop schema public cascade; create schema public;')
+  await query('drop schema public cascade; create schema public;')
 }
