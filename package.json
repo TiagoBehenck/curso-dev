@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm run services:up && pnpm run services:wait:database && pnpm run migrations:up && next dev",
+    "dev": "npx -y tsx infra/scripts/clean-database.ts",
+    "wrap:dev": "npm run services:up && npm run services:wait:database && npm run migrations:up && next dev",
     "test": "npm run services:up && concurrently -n next,vitest --hide next -k -s command-vitest 'next dev' 'vitest'",
     "posttest": "pnpm run services:stop",
     "services:up": "docker compose -f infra/compose.yaml up -d",
