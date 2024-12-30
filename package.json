@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm run services:up && pnpm run services:wait:database && pnpm run migrations:up && next dev",
+    "test": "npm run services:up && concurrently -n next,vitest --hide next -k -s command-vitest 'next dev' 'vitest'",
     "services:up": "docker compose -f infra/compose.yaml up -d",
     "services:stop": "docker compose -f infra/compose.yaml stop",
     "services:down": "docker compose -f infra/compose.yaml down",
@@ -14,7 +15,6 @@
     "lint:eslint:check": "eslint .",
     "lint:prettier:check": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",
-    "test": "npm run services:up && concurrently -n next,vitest --hide next -k -s command-vitest 'next dev' 'vitest'",
     "build": "next build",
     "prepare": "husky",
     "commit": "cz"
