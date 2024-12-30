@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm run services:up && pnpm run wait-for-postgres && pnpm run migration:up && next dev",
+    "dev": "pnpm run services:up && pnpm run services:wait:database && pnpm run migration:up && next dev",
     "services:up": "docker compose -f infra/compose.yaml up -d",
     "services:stop": "docker compose -f infra/compose.yaml stop",
     "services:down": "docker compose -f infra/compose.yaml down",
+    "services:wait:database": "npx -y tsx infra/scripts/wait-for-postgres.ts",
     "build": "next build",
     "test": "npm run services:up && concurrently -n next,vitest --hide next -k -s command-vitest 'next dev' 'vitest'",
     "lint:eslint:check": "eslint .",
@@ -16,7 +17,6 @@
     "migration:create": "./node_modules/.bin/node-pg-migrate -m infra/migrations create",
     "migration:up": "./node_modules/.bin/node-pg-migrate -m infra/migrations --envPath .env.development up",
     "migration:down": "./node_modules/.bin/node-pg-migrate -m infra/migrations --envPath .env.development down",
-    "wait-for-postgres": "npx -y tsx infra/scripts/wait-for-postgres.ts",
     "prepare": "husky",
     "commit": "cz"
   },
