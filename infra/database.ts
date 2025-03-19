@@ -3,7 +3,7 @@ import { Client } from 'pg'
 import { env } from '../env'
 
 async function query(queryObject) {
-  let client
+  let client: Client
 
   try {
     client = await getNewClient()
@@ -13,7 +13,7 @@ async function query(queryObject) {
     console.error(err)
     throw err
   } finally {
-    await client.end()
+    await client?.end()
   }
 }
 
