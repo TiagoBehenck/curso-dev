@@ -1,4 +1,4 @@
-import { InternalServerError } from 'infra/errors'
+import { InternalServerError, MethodNotAllowedError } from 'infra/errors'
 import {
   getVersion,
   getMaxConnection,
@@ -39,4 +39,26 @@ export async function GET() {
       { status: 500 }
     )
   }
+}
+
+export function POST() {
+  return methodNotAllowedResponse()
+}
+
+export function PUT() {
+  return methodNotAllowedResponse()
+}
+
+export function DELETE() {
+  return methodNotAllowedResponse()
+}
+
+export function PATCH() {
+  return methodNotAllowedResponse()
+}
+
+function methodNotAllowedResponse() {
+  const publicErrorObject = new MethodNotAllowedError()
+
+  return NextResponse.json(publicErrorObject, { status: 405 })
 }

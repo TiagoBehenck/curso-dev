@@ -4,6 +4,7 @@ import migrationRunner from 'node-pg-migrate'
 import { NextResponse } from 'next/server'
 import { resolve } from 'node:path'
 
+import { MethodNotAllowedError } from 'infra/errors'
 import { getNewClient } from 'infra/database'
 
 const defaultMigratioOptions: RunnerOptionConfig = {
@@ -70,4 +71,22 @@ export async function POST() {
       { status: 500 }
     )
   }
+}
+
+export function PUT() {
+  return methodNotAllowedResponse()
+}
+
+export function DELETE() {
+  return methodNotAllowedResponse()
+}
+
+export function PATCH() {
+  return methodNotAllowedResponse()
+}
+
+function methodNotAllowedResponse() {
+  const publicErrorObject = new MethodNotAllowedError()
+
+  return NextResponse.json(publicErrorObject, { status: 405 })
 }
