@@ -1,49 +1,11 @@
-import type { RunnerOptionConfig } from 'node-pg-migrate/dist/types'
-import type { RunMigration } from 'node-pg-migrate/dist/migration'
-import migrationRunner from 'node-pg-migrate'
 import { NextResponse } from 'next/server'
-import { resolve } from 'node:path'
 
 import { MethodNotAllowedError } from 'infra/errors'
-import { getNewClient } from 'infra/database'
-
-const defaultMigratioOptions: RunnerOptionConfig = {
-  dir: resolve('infra', 'migrations'),
-  direction: 'up',
-  migrationsTable: 'pgmigrations',
-  verbose: true,
-  dryRun: true,
-}
-
-async function runMigration({
-  dryRun = true,
-  ...rest
-}: Partial<RunnerOptionConfig> = {}): Promise<{ migrations: RunMigration[] }> {
-  let dbClient
-
-  try {
-    dbClient = await getNewClient()
-    const migrations = await migrationRunner({
-      ...defaultMigratioOptions,
-      ...rest,
-      dbClient,
-      dryRun,
-    })
-
-    return { migrations }
-  } catch (error) {
-    console.error('Migration error:', error)
-    throw error
-  } finally {
-    if (dbClient) {
-      await dbClient.end()
-    }
-  }
-}
+import { listPendingMigrations, runPendingMigrations } from 'models/migrator'
 
 export async function GET() {
   try {
-    const { migrations: pendingMigrations } = await runMigration()
+    const { migrations: pendingMigrations } = await listPendingMigrations()
 
     return NextResponse.json(pendingMigrations, { status: 200 })
   } catch (error) {
@@ -56,9 +18,7 @@ export async function GET() {
 
 export async function POST() {
   try {
-    const { migrations: migratedMigrations } = await runMigration({
-      dryRun: false,
-    })
+    const { migrations: migratedMigrations } = await runPendingMigrations()
 
     const hasMigrations = migratedMigrations.length > 0
 
