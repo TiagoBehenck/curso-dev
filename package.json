@@ -19,6 +19,7 @@
     "lint:prettier:fix": "prettier --write .",
     "build": "next build",
     "prepare": "husky",
+    "vitest": "vitest",
     "commit": "cz"
   },
   "keywords": [],
@@ -39,6 +40,7 @@
     "swr": "2.3.2",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^11.1.0",
     "zod": "3.24.1"
   },
   "devDependencies": {
