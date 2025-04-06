@@ -1,5 +1,6 @@
 import retry from 'async-retry'
 import { query } from 'infra/database'
+import { runPendingMigrations as modelRunPendingMigrations } from 'models/migrator'
 
 export async function waitForAllServices() {
   await waitForWebServer()
@@ -21,4 +22,8 @@ async function fetchStatusPage() {
 
 export async function cleanDatabase() {
   await query('drop schema public cascade; create schema public;')
+}
+
+export async function runPendingMigrations() {
+  await modelRunPendingMigrations()
 }
