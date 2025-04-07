@@ -1,5 +1,5 @@
 import { query } from 'infra/database'
-import { ValidationError } from 'infra/errors'
+import { NotFoundError, ValidationError } from 'infra/errors'
 
 export type UserInputValues = {
   username: string
@@ -92,8 +92,35 @@ async function create({ username, email, password }: UserInputValues) {
   }
 }
 
+async function findOneByUsername(username: string) {
+  const user = await query({
+    text: `
+      SELECT
+        *
+      FROM
+        users
+      WHERE
+        LOWER(TRIM(username)) = LOWER(TRIM($1))
+      LIMIT
+        1
+      ;`,
+    values: [username],
+  })
+
+  if (user.rowCount === 0) {
+    throw new NotFoundError({
+      message: 'User not found',
+      action: 'Try another username',
+      cause: 'USER_NOT_FOUND',
+    })
+  }
+
+  return user.rows[0]
+}
+
 const user = {
   create,
+  findOneByUsername,
 }
 
 export default user
