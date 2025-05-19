@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import user from 'models/user'
+import { user } from 'models/user'
 import { NotFoundError } from 'infra/errors'
 
 export async function GET(

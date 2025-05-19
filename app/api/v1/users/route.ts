@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import user, { UserInputValues } from 'models/user'
+import { UserInputValues, user } from 'models/user'
 import { ValidationError } from 'infra/errors'
 
 export async function POST(request: Request) {

@@ -1,4 +1,5 @@
 import { query } from 'infra/database'
+import { password as modelPassword } from 'models/password'
 import { NotFoundError, ValidationError } from 'infra/errors'
 
 export type UserInputValues = {
@@ -10,11 +11,12 @@ export type UserInputValues = {
 async function create({ username, email, password }: UserInputValues) {
   await validateUniqueEmail(email)
   await validateUniqueUsername(username)
+  const hashPassword = await hashPasswordInObject(password)
 
   const newUser = await runInsertQuery({
     username,
     email,
-    password,
+    password: hashPassword,
   })
 
   return newUser
@@ -118,9 +120,11 @@ async function findOneByUsername(username: string) {
   return user.rows[0]
 }
 
-const user = {
+async function hashPasswordInObject(password: string) {
+  return await modelPassword.hash(password)
+}
+
+export const user = {
   create,
   findOneByUsername,
 }
-
-export default user
