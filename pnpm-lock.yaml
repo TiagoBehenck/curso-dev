@@ -11,6 +11,9 @@ dependencies:
   async-retry:
     specifier: 1.3.3
     version: 1.3.3
+  bcryptjs:
+    specifier: ^3.0.2
+    version: 3.0.2
   class-variance-authority:
     specifier: ^0.7.1
     version: 0.7.1
@@ -73,6 +76,9 @@ devDependencies:
   '@eslint/js':
     specifier: 9.17.0
     version: 9.17.0
+  '@faker-js/faker':
+    specifier: ^9.8.0
+    version: 9.8.0
   '@testing-library/react':
     specifier: 16.1.0
     version: 16.1.0(@testing-library/dom@10.4.0)(@types/react@19.0.2)(react-dom@19.0.0)(react@19.0.0)
@@ -1071,6 +1077,11 @@ packages:
     dependencies:
       '@eslint/core': 0.11.0
       levn: 0.4.1
+    dev: true
+
+  /@faker-js/faker@9.8.0:
+    resolution: {integrity: sha512-U9wpuSrJC93jZBxx/Qq2wPjCuYISBueyVUGK7qqdmj7r/nxaxwW8AQDCLeRO7wZnjj94sh3p246cAYjUKuqgfg==}
+    engines: {node: '>=18.0.0', npm: '>=9.0.0'}
     dev: true
 
   /@humanfs/core@0.19.1:
@@ -2339,6 +2350,11 @@ packages:
   /base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
     dev: true
+
+  /bcryptjs@3.0.2:
+    resolution: {integrity: sha512-k38b3XOZKv60C4E2hVsXTolJWfkGRMbILBIe2IBITXciy5bOsTKot5kDrf3ZfufQtQOUN5mXceUEpU1rTl9Uog==}
+    hasBin: true
+    dev: false
 
   /binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}

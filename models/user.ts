@@ -1,4 +1,5 @@
 import { query } from 'infra/database'
+import { password as modelPassword } from 'models/password'
 import { NotFoundError, ValidationError } from 'infra/errors'
 
 export type UserInputValues = {
@@ -7,14 +8,19 @@ export type UserInputValues = {
   password: string
 }
 
+type UpdateUser = UserInputValues & {
+  id: string
+}
+
 async function create({ username, email, password }: UserInputValues) {
-  await validateUniqueEmail(email)
   await validateUniqueUsername(username)
+  await validateUniqueEmail(email)
+  const hashPassword = await hashPasswordInObject(password)
 
   const newUser = await runInsertQuery({
     username,
     email,
-    password,
+    password: hashPassword,
   })
 
   return newUser
@@ -37,58 +43,6 @@ async function create({ username, email, password }: UserInputValues) {
     })
 
     return newUser.rows[0]
-  }
-
-  async function validateUniqueEmail(email: string) {
-    const results = await query({
-      text: `
-        SELECT
-          email
-        FROM
-          users
-        WHERE
-          LOWER(TRIM(email)) = LOWER(TRIM($1))
-        LIMIT
-          1
-        ;`,
-      values: [email],
-    })
-
-    console.log(results)
-
-    if (results.rowCount > 0) {
-      throw new ValidationError({
-        message: 'The email has been taken.',
-        action: 'Try another email',
-        cause: 'EMAIL_TAKEN',
-      })
-    }
-  }
-
-  async function validateUniqueUsername(username: string) {
-    const results = await query({
-      text: `
-        SELECT
-          username
-        FROM
-          users
-        WHERE
-          LOWER(TRIM(username)) = LOWER(TRIM($1))
-        LIMIT
-          1
-        ;`,
-      values: [username],
-    })
-
-    console.log(results)
-
-    if (results.rowCount > 0) {
-      throw new ValidationError({
-        message: 'The username has been taken.',
-        action: 'Try another username',
-        cause: results,
-      })
-    }
   }
 }
 
@@ -118,9 +72,111 @@ async function findOneByUsername(username: string) {
   return user.rows[0]
 }
 
-const user = {
-  create,
-  findOneByUsername,
+async function validateUniqueEmail(email: string) {
+  const results = await query({
+    text: `
+        SELECT
+          email
+        FROM
+          users
+        WHERE
+          LOWER(TRIM(email)) = LOWER(TRIM($1))
+        LIMIT
+          1
+        ;`,
+    values: [email],
+  })
+
+  if (results.rowCount > 0) {
+    throw new ValidationError({
+      message: 'The email has been taken.',
+      action: 'Try another email',
+      cause: 'EMAIL_TAKEN',
+    })
+  }
 }
 
-export default user
+async function validateUniqueUsername(username: string) {
+  const results = await query({
+    text: `
+        SELECT
+          username
+        FROM
+          users
+        WHERE
+          LOWER(TRIM(username)) = LOWER(TRIM($1))
+        LIMIT
+          1
+        ;`,
+    values: [username],
+  })
+
+  if (results.rowCount > 0) {
+    throw new ValidationError({
+      message: 'The username has been taken.',
+      action: 'Try another username',
+      cause: results,
+    })
+  }
+}
+
+async function update(username: string, userInputValues: UserInputValues) {
+  const currentUser = await findOneByUsername(username)
+  let password = currentUser.password
+  const sameUsername =
+    currentUser.username.toLocaleLowerCase() ===
+    userInputValues?.username?.toLocaleLowerCase()
+
+  if (userInputValues.username && !sameUsername) {
+    await validateUniqueUsername(userInputValues.username)
+  }
+
+  if (userInputValues.email) {
+    await validateUniqueEmail(userInputValues.email)
+  }
+
+  if (userInputValues.password) {
+    password = await hashPasswordInObject(userInputValues.password)
+  }
+
+  const userWithNewValues = {
+    ...currentUser,
+    ...userInputValues,
+    password,
+  }
+
+  const updatedUser = await runUpdateQuery(userWithNewValues)
+
+  return updatedUser
+
+  async function runUpdateQuery({ id, username, email, password }: UpdateUser) {
+    const result = await query({
+      text: `
+        UPDATE
+         users
+        SET
+          username = $2,
+          email = $3,
+          password = $4,
+          updated_at = timezone('utc', now())
+        WHERE
+          id = $1
+        RETURNING
+          *
+        ;`,
+      values: [`${id}`, `${username}`, `${email}`, `${password}`],
+    })
+
+    return result.rows[0]
+  }
+}
+
+async function hashPasswordInObject(password: string) {
+  return await modelPassword.hash(password)
+}
+
+export const user = {
+  create,
+  findOneByUsername,
+  update,
+}
