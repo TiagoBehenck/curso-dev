@@ -2,15 +2,16 @@ import { query } from 'infra/database'
 import { password as modelPassword } from 'models/password'
 import { NotFoundError, ValidationError } from 'infra/errors'
 
-export type UserInputValues = {
+export type User = {
+  id: string
   username: string
   email: string
   password: string
+  created_at: string
+  updated_at: string
 }
 
-type UpdateUser = UserInputValues & {
-  id: string
-}
+export type UserInputValues = Pick<User, 'username' | 'email' | 'password'>
 
 async function create({ username, email, password }: UserInputValues) {
   await validateUniqueUsername(username)
@@ -42,7 +43,7 @@ async function create({ username, email, password }: UserInputValues) {
       values: [`${username}`, `${email}`, `${password}`],
     })
 
-    return newUser.rows[0]
+    return newUser.rows[0] as User
   }
 }
 
@@ -69,7 +70,7 @@ async function findOneByUsername(username: string) {
     })
   }
 
-  return user.rows[0]
+  return user.rows[0] as User
 }
 
 async function validateUniqueEmail(email: string) {
@@ -149,7 +150,12 @@ async function update(username: string, userInputValues: UserInputValues) {
 
   return updatedUser
 
-  async function runUpdateQuery({ id, username, email, password }: UpdateUser) {
+  async function runUpdateQuery({
+    id,
+    username,
+    email,
+    password,
+  }: Partial<User>) {
     const result = await query({
       text: `
         UPDATE
@@ -167,7 +173,7 @@ async function update(username: string, userInputValues: UserInputValues) {
       values: [`${id}`, `${username}`, `${email}`, `${password}`],
     })
 
-    return result.rows[0]
+    return result.rows[0] as User
   }
 }
 
@@ -175,8 +181,35 @@ async function hashPasswordInObject(password: string) {
   return await modelPassword.hash(password)
 }
 
+async function findOneByEmail(email: string) {
+  const user = await query({
+    text: `
+      SELECT
+        *
+      FROM
+        users
+      WHERE
+        LOWER(TRIM(email)) = LOWER(TRIM($1))
+      LIMIT
+        1
+      ;`,
+    values: [email],
+  })
+
+  if (user.rowCount === 0) {
+    throw new NotFoundError({
+      message: 'E-mail not found',
+      action: 'Try another e-mail',
+      cause: 'USER_NOT_FOUND',
+    })
+  }
+
+  return user.rows[0] as User
+}
+
 export const user = {
   create,
   findOneByUsername,
   update,
+  findOneByEmail,
 }

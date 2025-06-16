@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 
 import { query } from 'infra/database'
 import { runPendingMigrations as modelRunPendingMigrations } from 'models/migrator'
-import { user } from 'models/user'
+import { User, user, UserInputValues } from 'models/user'
 
 export async function waitForAllServices() {
   await waitForWebServer()
@@ -31,17 +31,11 @@ export async function runPendingMigrations() {
   await modelRunPendingMigrations()
 }
 
-type User = {
-  username: string
-  email: string
-  password: string
-}
-
 export async function createUser({
   username,
   email,
   password,
-}: Partial<User>): Promise<User> {
+}: Partial<UserInputValues>): Promise<User> {
   return await user.create({
     username: username || faker.internet.username().replace(/[_.-]/g, ''),
     email: email || faker.internet.email(),

@@ -136,3 +136,25 @@ export class NotFoundError extends Error {
     }
   }
 }
+
+export class UnauthorizedError extends Error {
+  action: string
+  statusCode: number
+
+  constructor({ action, message }: { action: string; message: string }) {
+    super(message || 'Unauthorized')
+
+    this.name = 'Unauthorized'
+    this.action = action || 'Resource not found'
+    this.statusCode = 401
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      status_code: this.statusCode,
+    }
+  }
+}
